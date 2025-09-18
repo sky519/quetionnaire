@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request) {
@@ -8,9 +9,20 @@ export async function POST(request) {
   console.log("[ data ] >", data);
   const uid = uuidv4();
 
-  try {
-    return NextResponse.json({ data, uid });
-  } catch (e) {
-    return NextResponse.json({ error: e }, { status: 500 });
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("questionnaires")
+    .insert({
+      id: uid,
+      title: data.title,
+      target: data.target,
+      questions: JSON.stringify(data.questions),
+    });
+
+  if (error) {
+    console.log("[ error ] >", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  return NextResponse.json({ id: uid }, { status: 200 });
 }

@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request) {
   // 获取 formData
+  // console.log("[ data ] >", data);
   const data = await request.json();
   console.log("[ data ] >", data);
   const uid = uuidv4();

@@ -1,6 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { getQuestionnaire, saveAnswer } from "@/lib/supabase/client";
+import {
+  getQuestionnaire,
+  saveAnswer,
+  checkAnswer,
+} from "@/lib/supabase/client";
 import { Form, Input, Radio, Checkbox, Button, Spin, Alert } from "antd";
 import "antd/dist/reset.css";
 
@@ -92,7 +96,17 @@ export default function QuestionnaireForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("问卷调查");
-  const [status] = useState<number>(0);
+  const [status, setStatus] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const res = await checkAnswer(id, uid);
+      console.log("[ res ] >", res);
+      setStatus(res?.status || 0);
+      // setStatus(res?.status || 0);
+    };
+    fetchStatus();
+  }, [id, uid]);
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
@@ -226,6 +240,10 @@ export default function QuestionnaireForm({
       </Form>
     </div>
   ) : (
-    <div>111</div>
+    <div>
+      <h2 className="text-center my-10 text-2xl font-bold">
+        您已提交过问卷，谢谢参与！
+      </h2>
+    </div>
   );
 }

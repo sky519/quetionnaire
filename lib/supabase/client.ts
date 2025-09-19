@@ -1,5 +1,4 @@
 import { createBrowserClient } from "@supabase/ssr";
-import { stat } from "fs";
 
 export function createClient() {
   return createBrowserClient(
@@ -43,4 +42,24 @@ export const saveAnswer = async (id, uid, answers) => {
   return {
     status: "success",
   };
+};
+
+export const checkAnswer = async (id, uid) => {
+  const supabase = await createClient();
+  const { error, data } = await supabase
+    .from("answers")
+    .select()
+    .eq("qid", id)
+    .eq("uid", uid)
+    .single();
+
+  if (error) {
+    return { status: 0 };
+  }
+
+  if (data?.length === 0) {
+    return { status: 0 };
+  } else {
+    return { status: 1 };
+  }
 };

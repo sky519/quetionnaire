@@ -1,4 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr";
+import { stat } from "fs";
 
 export function createClient() {
   return createBrowserClient(
@@ -25,5 +26,21 @@ export const getQuestionnaire = async (id) => {
     title: data.title,
     target: data.target,
     questions: JSON.parse(data.questions),
+  };
+};
+
+export const saveAnswer = async (id, uid, answers) => {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("answers")
+    .insert({ answers, qid: id, uid });
+
+  if (error) {
+    console.error("Error fetching questionnaire:", error);
+    return null;
+  }
+
+  return {
+    status: "success",
   };
 };

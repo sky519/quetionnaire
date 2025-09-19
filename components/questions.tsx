@@ -1,16 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { getQuestionnaire } from "@/lib/supabase/client";
-import {
-  Form,
-  Input,
-  Radio,
-  Checkbox,
-  Button,
-  message,
-  Spin,
-  Alert,
-} from "antd";
+import { getQuestionnaire, saveAnswer } from "@/lib/supabase/client";
+import { Form, Input, Radio, Checkbox, Button, Spin, Alert } from "antd";
 import "antd/dist/reset.css";
 
 type Question =
@@ -101,6 +92,7 @@ export default function QuestionnaireForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("问卷调查");
+  const [status] = useState<number>(0);
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
@@ -133,10 +125,10 @@ export default function QuestionnaireForm({
     setAnswers((prev) => ({ ...prev, [id]: checkedValue }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // 这里可以提交 answers 到后端
-    console.log("[ 1111111 ] >", 1111111);
-    message.success("提交成功！\n" + JSON.stringify(answers, null, 2));
+    const data = await saveAnswer(id, uid, answers);
+    console.log("[ data ] >", data);
   };
 
   if (loading) return <Spin style={{ width: "100%", margin: "40px 0" }} />;
@@ -150,7 +142,7 @@ export default function QuestionnaireForm({
       />
     );
 
-  return (
+  return status === 0 ? (
     <div
       style={{
         maxWidth: 600,
@@ -166,12 +158,7 @@ export default function QuestionnaireForm({
       </h2>
       <Form layout="vertical" onFinish={handleSubmit}>
         {questions.map((q) => (
-          <Form.Item
-            required
-            key={q.id}
-            label={q.title}
-            style={{ marginBottom: 28 }}
-          >
+          <Form.Item key={q.id} label={q.title} style={{ marginBottom: 28 }}>
             {q.type === "input" && (
               <Input
                 value={getInputValue(answers[q.id])}
@@ -238,5 +225,7 @@ export default function QuestionnaireForm({
         </Form.Item>
       </Form>
     </div>
+  ) : (
+    <div>111</div>
   );
 }

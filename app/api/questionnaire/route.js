@@ -27,5 +27,5 @@ export async function POST(request) {
   }
 
   console.log("[ success ] >", { id: data[0]?.id });
-  return NextResponse(data[0]?.id);
+  return new NextResponse(data[0]?.id);
 }

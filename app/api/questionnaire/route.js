@@ -9,7 +9,7 @@ export async function POST(request) {
   console.log("[ data ] >", data);
   const uid = uuidv4();
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from("questionnaires").insert({
     id: uid,

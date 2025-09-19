@@ -88,8 +88,8 @@ export default function QuestionnaireForm({
   id,
   uid,
 }: {
-  id: string | undefined;
-  uid: string | undefined;
+  id: string | string[] | undefined;
+  uid: string | string[] | undefined;
 }) {
   const [answers, setAnswers] = useState<AnswersState>({});
   const [questions, setQuestions] = useState<Question[]>([]);

@@ -27,5 +27,5 @@ export async function POST(request) {
   }
 
   console.log("[ success ] >", { id: data[0]?.id });
-  return NextResponse.json({ id: data[0]?.id }, { status: 200 });
+  return NextResponse(data[0]?.id);
 }

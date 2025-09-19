@@ -8,7 +8,7 @@ import "@ant-design/v5-patch-for-react-19";
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const params = await searchParams;
   const id = params?.id || "1";

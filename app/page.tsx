@@ -5,11 +5,7 @@ import { hasEnvVars } from "@/lib/utils";
 // import Link from "next/link";
 import "@ant-design/v5-patch-for-react-19";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
+export default async function Home({ searchParams }) {
   const params = await searchParams;
   const id = params?.id || "1";
   const uid = params?.uid || "1";

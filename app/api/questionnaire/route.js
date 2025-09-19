@@ -11,18 +11,18 @@ export async function POST(request) {
 
   const supabase = createClient();
 
-  const { error } = await supabase
-    .from("questionnaires")
-    .insert({
-      id: uid,
-      title: data.title,
-      target: data.target,
-      questions: JSON.stringify(data.questions),
-    });
+  const { error } = await supabase.from("questionnaires").insert({
+    id: uid,
+    title: data.title,
+    target: data.target,
+    questions: JSON.stringify(data.questions),
+  });
 
   if (error) {
     console.log("[ error ] >", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  console.log("[ success ] >", { id: uid });
   return NextResponse.json({ id: uid }, { status: 200 });
 }

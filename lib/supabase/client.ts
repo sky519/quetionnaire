@@ -1,6 +1,4 @@
 import { createBrowserClient } from "@supabase/ssr";
-import { time } from "console";
-import { title } from "process";
 
 export function createClient() {
   return createBrowserClient(

@@ -1,6 +1,17 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { getQuestionnaire } from "@/lib/supabase/client";
+import {
+  Form,
+  Input,
+  Radio,
+  Checkbox,
+  Button,
+  message,
+  Spin,
+  Alert,
+} from "antd";
+import "antd/dist/reset.css";
 
 type Question =
   | { id: number; type: "input"; title: string }
@@ -74,116 +85,158 @@ type Question =
 type AnswerValue = string | boolean | Array<string | boolean>;
 type AnswersState = Record<number, AnswerValue>;
 
-export default function QuestionnaireForm() {
+// 保证 input 只接收 string
+const getInputValue = (val: AnswerValue) =>
+  typeof val === "string" ? val : "";
+
+export default function QuestionnaireForm({
+  id,
+  uid,
+}: {
+  id: string | undefined;
+  uid: string | undefined;
+}) {
   const [answers, setAnswers] = useState<AnswersState>({});
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>("问卷调查");
 
   useEffect(() => {
     const fetchQuestionnaires = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        // 查询用户表数据
-        const data = await getQuestionnaire(1);
-        console.log("[ data ] >", data);
+        const data = await getQuestionnaire(id);
         setQuestions(data?.questions || []);
-      } catch (err) {
-        console.error("获取用户失败:", err);
+        setTitle(data?.title || "问卷调查");
+      } catch (err: unknown) {
+        if (err && typeof err === "object" && "message" in err) {
+          setError((err as { message?: string }).message || "加载失败");
+        } else {
+          setError("加载失败");
+        }
       }
+      setLoading(false);
     };
-
     fetchQuestionnaires();
-  }, []);
+  }, [id, uid]);
 
   const handleChange = (id: number, value: string | boolean) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleCheckboxChange = (id: number, option: string | boolean) => {
-    setAnswers((prev) => {
-      const prevArr = Array.isArray(prev[id])
-        ? (prev[id] as Array<string | boolean>)
-        : [];
-      if (prevArr.includes(option)) {
-        return { ...prev, [id]: prevArr.filter((v) => v !== option) };
-      } else {
-        return { ...prev, [id]: [...prevArr, option] };
-      }
-    });
+  const handleCheckboxChange = (
+    id: number,
+    checkedValue: Array<string | boolean>
+  ) => {
+    setAnswers((prev) => ({ ...prev, [id]: checkedValue }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     // 这里可以提交 answers 到后端
-    alert(JSON.stringify(answers, null, 2));
+    console.log("[ 1111111 ] >", 1111111);
+    message.success("提交成功！\n" + JSON.stringify(answers, null, 2));
   };
+
+  if (loading) return <Spin style={{ width: "100%", margin: "40px 0" }} />;
+  if (error)
+    return (
+      <Alert
+        type="error"
+        message={"加载失败: " + error}
+        showIcon
+        style={{ margin: "40px 0" }}
+      />
+    );
 
   return (
-    <form
-      className="max-w-xl mx-auto p-6 bg-white rounded shadow"
-      onSubmit={handleSubmit}
+    <div
+      style={{
+        maxWidth: 600,
+        margin: "40px auto",
+        background: "#fff",
+        borderRadius: 8,
+        boxShadow: "0 2px 8px #f0f1f2",
+        padding: 32,
+      }}
     >
-      <h2 className="text-2xl font-bold mb-6">问卷调查</h2>
-      {questions.map((q) => (
-        <div className="mb-6" key={q.id}>
-          <label className="block font-medium mb-2">{q.title}</label>
-          {q.type === "input" && (
-            <input
-              type="text"
-              className="w-full border rounded px-3 py-2"
-              value={(() => {
-                const v = answers[q.id];
-                if (typeof v === "string") return v;
-                return "";
-              })()}
-              onChange={(e) => handleChange(q.id, e.target.value)}
-            />
-          )}
-          {q.type === "radio" &&
-            q.options.map((opt) => (
-              <label
-                key={String(opt)}
-                className="inline-flex items-center mr-4"
+      <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 32 }}>
+        {title}
+      </h2>
+      <Form layout="vertical" onFinish={handleSubmit}>
+        {questions.map((q) => (
+          <Form.Item
+            required
+            key={q.id}
+            label={q.title}
+            style={{ marginBottom: 28 }}
+          >
+            {q.type === "input" && (
+              <Input
+                value={getInputValue(answers[q.id])}
+                onChange={(e) => handleChange(q.id, e.target.value)}
+                placeholder="请输入..."
+              />
+            )}
+            {q.type === "radio" && q.options && (
+              <Radio.Group
+                value={answers[q.id]}
+                onChange={(e) =>
+                  handleChange(
+                    q.id,
+                    e.target.value === "true"
+                      ? true
+                      : e.target.value === "false"
+                      ? false
+                      : e.target.value
+                  )
+                }
               >
-                <input
-                  type="radio"
-                  name={`q${q.id}`}
-                  value={String(opt)}
-                  checked={answers[q.id] === opt}
-                  onChange={() => handleChange(q.id, opt)}
-                  className="mr-2"
-                />
-                {typeof opt === "boolean" ? (opt ? "是" : "否") : opt}
-              </label>
-            ))}
-          {q.type === "checkbox" &&
-            q.options.map((opt) => {
-              const arr = Array.isArray(answers[q.id])
-                ? (answers[q.id] as Array<string | boolean>)
-                : [];
-              return (
-                <label
-                  key={String(opt)}
-                  className="inline-flex items-center mr-4"
-                >
-                  <input
-                    type="checkbox"
-                    name={`q${q.id}`}
-                    value={String(opt)}
-                    checked={arr.includes(opt)}
-                    onChange={() => handleCheckboxChange(q.id, opt)}
-                    className="mr-2"
-                  />
-                  {opt}
-                </label>
-              );
-            })}
-        </div>
-      ))}
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-      >
-        提交
-      </button>
-    </form>
+                {q.options.map((opt) => (
+                  <Radio
+                    key={String(opt)}
+                    value={opt}
+                    style={{ marginRight: 16 }}
+                  >
+                    {typeof opt === "boolean" ? (opt ? "是" : "否") : opt}
+                  </Radio>
+                ))}
+              </Radio.Group>
+            )}
+            {q.type === "checkbox" && q.options && (
+              <Checkbox.Group
+                value={
+                  Array.isArray(answers[q.id])
+                    ? (answers[q.id] as (string | boolean)[])
+                    : []
+                }
+                onChange={(checked) =>
+                  handleCheckboxChange(
+                    q.id,
+                    Array.isArray(checked) ? checked : []
+                  )
+                }
+              >
+                {q.options.map((opt) => (
+                  <Checkbox
+                    key={String(opt)}
+                    value={opt}
+                    style={{ marginRight: 16 }}
+                  >
+                    {opt}
+                  </Checkbox>
+                ))}
+              </Checkbox.Group>
+            )}
+          </Form.Item>
+        ))}
+        <Form.Item>
+          <Button type="primary" htmlType="submit" style={{ width: 120 }}>
+            提交
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 }

@@ -160,7 +160,7 @@ export default function QuestionnaireForm({
     <div
       style={{
         maxWidth: 600,
-        margin: "40px auto",
+        margin: "20px auto",
         background: "#fff",
         borderRadius: 8,
         boxShadow: "0 2px 8px #f0f1f2",

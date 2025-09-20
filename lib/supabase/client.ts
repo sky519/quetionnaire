@@ -53,6 +53,8 @@ export const checkAnswer = async (id, uid) => {
     .eq("uid", uid)
     .single();
 
+  console.log("[ error,data ] >", error, data);
+
   if (error) {
     return { status: 0 };
   }

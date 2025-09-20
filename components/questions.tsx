@@ -141,8 +141,12 @@ export default function QuestionnaireForm({
 
   const handleSubmit = async () => {
     // 这里可以提交 answers 到后端
+    // setLoading(true);
+    console.log("[ answers ] >", answers);
     const data = await saveAnswer(id, uid, answers);
+    // setLoading(false);
     console.log("[ data ] >", data);
+    location.reload();
   };
 
   if (loading) return <Spin style={{ width: "100%", margin: "40px 0" }} />;

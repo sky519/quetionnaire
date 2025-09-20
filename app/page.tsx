@@ -15,7 +15,7 @@ export default async function Home({ searchParams }) {
     <main className="min-h-screen flex flex-col items-center">
       <div className="flex-1 w-full flex flex-col items-center overflow-hidden">
         <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-          <div className="w-full max-w-5xl flex justify-end items-center p-3 px-5 text-sm">
+          <div className="w-full flex justify-end items-center p-3 px-5 text-sm">
             {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
           </div>
         </nav>

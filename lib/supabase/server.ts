@@ -32,3 +32,38 @@ export async function createClient() {
     }
   );
 }
+
+export const getAllQuestionnaires = async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("questionnaires").select();
+
+  if (error) {
+    console.error("Error fetching questionnaire:", error);
+    return null;
+  }
+
+  return {
+    data,
+  };
+};
+
+export const getQuestionnaire = async (id) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("questionnaires")
+    .select()
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    console.error("Error fetching questionnaire:", error);
+    return null;
+  }
+
+  return {
+    id: data.id,
+    title: data.title,
+    target: data.target,
+    questions: JSON.parse(data.questions),
+  };
+};

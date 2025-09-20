@@ -20,11 +20,7 @@ type AnswersState = Record<number, AnswerValue>;
 const getInputValue = (val: AnswerValue) =>
   typeof val === "string" ? val : "";
 
-export default function QuestionnaireForm({
-  id,
-}: {
-  id: string | string[] | undefined;
-}) {
+export default function QuestionnaireForm({ id }) {
   const [answers, setAnswers] = useState<AnswersState>({});
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);

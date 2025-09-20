@@ -1,11 +1,7 @@
 import Analyze from "./components/analyze";
 import QuestionsResult from "@/components/questionsResult";
 
-export default async function ProtectedPage({
-  params,
-}: {
-  params: { id: string | string[] | undefined };
-}) {
+export default async function ProtectedPage({ params }) {
   const id = await params.id;
   return (
     <div className="flex w-full h-[calc(100vh-8rem)] min-h-0">

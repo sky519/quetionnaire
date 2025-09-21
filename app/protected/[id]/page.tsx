@@ -2,7 +2,8 @@ import Analyze from "./components/analyze";
 import QuestionsResult from "@/components/questionsResult";
 
 export default async function ProtectedPage({ params }) {
-  const id = await params.id;
+  const pageParams = await params;
+  const id = pageParams.id;
   return (
     <div className="flex w-full h-[calc(100vh-8rem)] min-h-0">
       {/* 左侧：问卷内容 */}

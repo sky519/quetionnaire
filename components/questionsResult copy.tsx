@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { getQuestionnaire, getAnswers } from "@/lib/supabase/client";
-import { Form, Spin, Alert, List } from "antd";
-import PieChartContainer from "@/components/PieChartContainer";
+import { Form, Input, Radio, Checkbox, Spin, Alert } from "antd";
 import "antd/dist/reset.css";
 
 type Question =
@@ -17,20 +16,16 @@ type Question =
 type AnswerValue = string | boolean | Array<string | boolean>;
 type AnswersState = Record<number, AnswerValue>;
 
+// 保证 input 只接收 string
+const getInputValue = (val: AnswerValue) =>
+  typeof val === "string" ? val : "";
+
 export default function QuestionnaireForm({ id }) {
   const [answers, setAnswers] = useState<AnswersState>({});
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("问卷调查");
-
-  const data1 = [
-    "Racing car sprays burning fuel into crowd.",
-    "Japanese princess to wed commoner.",
-    "Australian walks 500 miles to see wife.",
-    "Man arrested for stealing a car.",
-    "Woman wins lottery twice in one week.",
-  ];
 
   useEffect(() => {
     console.log("[ id1 ] >", id);
@@ -39,7 +34,6 @@ export default function QuestionnaireForm({ id }) {
       setError(null);
       try {
         const data = await getQuestionnaire(id);
-        console.log("[ data.questions ] >", data?.questions);
         setQuestions(data?.questions || []);
         setTitle(data?.title || "问卷调查");
       } catch (err: unknown) {
@@ -101,30 +95,44 @@ export default function QuestionnaireForm({ id }) {
       </h2>
       <Form layout="vertical" aria-readonly disabled>
         {questions.map((q) => (
-          <Form.Item
-            key={q.id}
-            label={q.id + 1 + ". " + q.title}
-            style={{ marginBottom: 28 }}
-          >
+          <Form.Item key={q.id} label={q.title} style={{ marginBottom: 28 }}>
             {q.type === "input" && (
-              <div className="h-40 overflow-y-auto">
-                <List
-                  size="small"
-                  bordered
-                  dataSource={data1}
-                  renderItem={(item) => <List.Item>{item}</List.Item>}
-                />
-              </div>
+              <Input
+                value={getInputValue(answers[q.id])}
+                placeholder="请输入..."
+              />
             )}
             {q.type === "radio" && q.options && (
-              <div className="h-64">
-                <PieChartContainer />
-              </div>
+              <Radio.Group value={answers[q.id]}>
+                {q.options.map((opt) => (
+                  <Radio
+                    key={String(opt)}
+                    value={opt}
+                    style={{ marginRight: 16 }}
+                  >
+                    {typeof opt === "boolean" ? (opt ? "是" : "否") : opt}
+                  </Radio>
+                ))}
+              </Radio.Group>
             )}
             {q.type === "checkbox" && q.options && (
-              <div className="h-64">
-                <PieChartContainer />
-              </div>
+              <Checkbox.Group
+                value={
+                  Array.isArray(answers[q.id])
+                    ? (answers[q.id] as (string | boolean)[])
+                    : []
+                }
+              >
+                {q.options.map((opt) => (
+                  <Checkbox
+                    key={String(opt)}
+                    value={opt}
+                    style={{ marginRight: 16 }}
+                  >
+                    {opt}
+                  </Checkbox>
+                ))}
+              </Checkbox.Group>
             )}
           </Form.Item>
         ))}

@@ -9,7 +9,10 @@ export function createClient() {
 
 export const getAllQuestionnaires = async () => {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("questionnaires").select();
+  const { data, error } = await supabase
+    .from("questionnaires")
+    .select()
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Error fetching questionnaire:", error);
@@ -77,5 +80,22 @@ export const checkAnswer = async (id, uid) => {
     return { status: 0 };
   } else {
     return { status: 1 };
+  }
+};
+
+export const getAnswers = async (id) => {
+  const supabase = await createClient();
+  const { error, data } = await supabase.from("answers").select().eq("qid", id);
+
+  console.log("[ error,data ] >", error, data);
+
+  if (error) {
+    return { status: 0 };
+  }
+
+  if (data?.length === 0) {
+    return { answers: [] };
+  } else {
+    return { answers: data[0].answers };
   }
 };

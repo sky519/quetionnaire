@@ -24,14 +24,6 @@ export default function QuestionnaireForm({ id }) {
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("问卷调查");
 
-  const data1 = [
-    "Racing car sprays burning fuel into crowd.",
-    "Japanese princess to wed commoner.",
-    "Australian walks 500 miles to see wife.",
-    "Man arrested for stealing a car.",
-    "Woman wins lottery twice in one week.",
-  ];
-
   useEffect(() => {
     console.log("[ id1 ] >", id);
     const fetchQuestionnaires = async () => {
@@ -130,7 +122,11 @@ export default function QuestionnaireForm({ id }) {
                 <List
                   size="small"
                   bordered
-                  dataSource={answers[q.id] || []}
+                  dataSource={
+                    Array.isArray(answers[q.id])
+                      ? (answers[q.id] as (string | boolean)[])
+                      : []
+                  }
                   renderItem={(item) => <List.Item>{item}</List.Item>}
                 />
               </div>

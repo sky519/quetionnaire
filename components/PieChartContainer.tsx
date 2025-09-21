@@ -7,6 +7,7 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
+import type { PieLabelRenderProps } from "recharts";
 
 const RADIAN = Math.PI / 180;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -18,20 +19,27 @@ const renderCustomizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
-}: any) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-(midAngle ?? 0) * RADIAN);
-  const y = cy + radius * Math.sin(-(midAngle ?? 0) * RADIAN);
+}: PieLabelRenderProps) => {
+  const cxNum = Number(cx ?? 0);
+  const cyNum = Number(cy ?? 0);
+  const midAngleNum = Number(midAngle ?? 0);
+  const innerRadiusNum = Number(innerRadius ?? 0);
+  const outerRadiusNum = Number(outerRadius ?? 0);
+  const percentNum = Number(percent ?? 0);
+
+  const radius = innerRadiusNum + (outerRadiusNum - innerRadiusNum) * 0.5;
+  const x = cxNum + radius * Math.cos(-midAngleNum * RADIAN);
+  const y = cyNum + radius * Math.sin(-midAngleNum * RADIAN);
 
   return (
     <text
       x={x}
       y={y}
       fill="white"
-      textAnchor={x > cx ? "start" : "end"}
+      textAnchor={x > cxNum ? "start" : "end"}
       dominantBaseline="central"
     >
-      {`${((percent ?? 1) * 100).toFixed(0)}%`}
+      {`${(percentNum * 100).toFixed(0)}%`}
     </text>
   );
 };

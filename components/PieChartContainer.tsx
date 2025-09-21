@@ -1,11 +1,12 @@
-import { Cell, Pie, PieChart, ResponsiveContainer, Legend } from "recharts";
-
-const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
+"use client";
+import {
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
 
 const RADIAN = Math.PI / 180;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
@@ -35,7 +36,25 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default function PieChartContainer() {
+export default function PieChartContainer({ answerData }) {
+  console.log("[ answerData ] >", answerData);
+  const data = answerData.reduce((acc, curr) => {
+    const existing = acc.find((item) => item.name === curr);
+    if (existing) {
+      existing.value += 1;
+    } else {
+      acc.push({ name: curr, value: 1 });
+    }
+    return acc;
+  }, []);
+  console.log("[ answerData after ] >", answerData);
+  // 示例数据
+  // const data = [
+  //   { name: "Group A", value: 400 },
+  //   { name: "Group B", value: 300 },
+  //   { name: "Group C", value: 300 },
+  //   { name: "Group D", value: 200 },
+  // ];
   return (
     <ResponsiveContainer width="100%" height="100%">
       <PieChart width={400} height={400}>
@@ -57,6 +76,7 @@ export default function PieChartContainer() {
           ))}
         </Pie>
         <Legend />
+        <Tooltip />
       </PieChart>
     </ResponsiveContainer>
   );

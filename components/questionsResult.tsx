@@ -61,8 +61,27 @@ export default function QuestionnaireForm({ id }) {
       setError(null);
       try {
         const data = await getAnswers(id);
-        console.log("[ data ] >", data);
-        setAnswers(data?.answers || {});
+        // console.log("[ answers ] >", data.answers);
+        const parsedAnswers = data.answers?.map((item) =>
+          JSON.parse(item.answers)
+        );
+        console.log("[ parsedAnswers ] >", parsedAnswers);
+
+        const tempAnswers = {};
+        parsedAnswers?.forEach((ans) => {
+          Object.keys(ans).forEach((key) => {
+            if (!tempAnswers[key]) {
+              tempAnswers[key] = [];
+            }
+            ans[key] = Array.isArray(ans[key])
+              ? tempAnswers[key].push(...ans[key])
+              : tempAnswers[key].push(ans[key]);
+          });
+        });
+
+        console.log("[ tempAnswers ] >", tempAnswers);
+
+        setAnswers(tempAnswers);
       } catch (err: unknown) {
         if (err && typeof err === "object" && "message" in err) {
           setError((err as { message?: string }).message || "加载失败");
@@ -111,19 +130,19 @@ export default function QuestionnaireForm({ id }) {
                 <List
                   size="small"
                   bordered
-                  dataSource={data1}
+                  dataSource={answers[q.id] || []}
                   renderItem={(item) => <List.Item>{item}</List.Item>}
                 />
               </div>
             )}
             {q.type === "radio" && q.options && (
               <div className="h-64">
-                <PieChartContainer />
+                <PieChartContainer answerData={answers[q.id] || []} />
               </div>
             )}
             {q.type === "checkbox" && q.options && (
               <div className="h-64">
-                <PieChartContainer />
+                <PieChartContainer answerData={answers[q.id] || []} />
               </div>
             )}
           </Form.Item>

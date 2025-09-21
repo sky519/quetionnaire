@@ -96,6 +96,6 @@ export const getAnswers = async (id) => {
   if (data?.length === 0) {
     return { answers: [] };
   } else {
-    return { answers: data[0].answers };
+    return { answers: data };
   }
 };

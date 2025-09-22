@@ -176,7 +176,11 @@ export default function QuestionnaireForm({
       </h2>
       <Form layout="vertical" onFinish={handleSubmit}>
         {questions.map((q) => (
-          <Form.Item key={q.id} label={q.title} style={{ marginBottom: 28 }}>
+          <Form.Item
+            key={q.id}
+            label={q.id + 1 + ". " + q.title}
+            style={{ marginBottom: 28 }}
+          >
             {q.type === "input" && (
               <Input
                 value={getInputValue(answers[q.id])}

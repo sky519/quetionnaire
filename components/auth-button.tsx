@@ -1,29 +1,38 @@
+"use client";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/client";
 import { LogoutButton } from "./logout-button";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 
-export async function AuthButton() {
-  const supabase = await createClient();
+export function AuthButton() {
+  const pathname = usePathname();
+  const [user, setUser] = useState<User | null>(null);
 
-  // You can also use getUser() which will be slower.
-  const { data } = await supabase.auth.getClaims();
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      setUser(data?.user ?? null);
+    };
+    fetchUser();
+  }, []);
 
-  const user = data?.claims;
-
-  return user ? (
-    <div className="flex items-center gap-4">
-      你好, {user.email}!
-      <LogoutButton />
-    </div>
-  ) : (
+  if (pathname !== "/" && user) {
+    return (
+      <div className="flex items-center gap-4">
+        你好, {user.email ?? "未知邮箱"}!
+        <LogoutButton />
+      </div>
+    );
+  }
+  return (
     <div className="flex gap-2">
       <Button asChild size="sm" variant={"default"}>
-        <Link href="/auth/login">查看后台统计</Link>
+        <Link href={user ? "/protected/0" : "/auth/login"}>查看后台统计</Link>
       </Button>
-      {/* <Button asChild size="sm" variant={"default"}>
-        <Link href="/auth/sign-up">Sign up</Link>
-      </Button> */}
     </div>
   );
 }

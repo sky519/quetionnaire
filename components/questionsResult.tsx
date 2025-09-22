@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { getQuestionnaire, getAnswers } from "@/lib/supabase/client";
 import { Form, Spin, Alert, List } from "antd";
 import PieChartContainer from "@/components/PieChartContainer";
+import PieChart2Container from "@/components/PieChart2Container";
 import "antd/dist/reset.css";
 
 type Question =
@@ -133,7 +134,7 @@ export default function QuestionnaireForm({ id }) {
             )}
             {q.type === "radio" && q.options && (
               <div className="h-64">
-                <PieChartContainer answerData={answers[q.id] || []} />
+                <PieChart2Container answerData={answers[q.id] || []} />
               </div>
             )}
             {q.type === "checkbox" && q.options && (

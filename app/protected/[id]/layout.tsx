@@ -23,7 +23,7 @@ export default function ProtectedLayout({
         <div className="flex flex-row gap-8 p-5 w-full h-[calc(100vh-4rem)] min-h-0">
           {/* 左侧：问卷列表 */}
           <aside className="w-1/4 min-w-[200px] max-w-xl border-r pr-4 h-full flex flex-col">
-            <div className="font-bold text-lg mb-4 shrink-0">问卷列表</div>
+            <div className="font-bold text-[24px] mb-4 shrink-0">问卷列表</div>
             <div className="flex-1 min-h-0 overflow-y-auto">
               {/* TODO: 填充问卷列表 */}
               <div className="text-gray-500">

@@ -1,3 +1,33 @@
+/* 全局滚动条美化 */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #a5b4fc 0%, #f0abfc 100%);
+  border-radius: 8px;
+  min-height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #818cf8 0%, #e879f9 100%);
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #6366f1 0%, #a21caf 100%);
+  border: 2px solid rgba(30, 41, 59, 0.5);
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #3730a3 0%, #701a75 100%);
+}
+html.dark ::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.08);
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

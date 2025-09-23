@@ -54,7 +54,7 @@ export default function Analyze({ id }: { id: string }) {
     fetch("/api/aiAnalyze", {
       method: "POST",
       body: JSON.stringify({
-        model: "deepseek/deepseek-chat-v3.1:free",
+        model: "deepseek-ai/DeepSeek-V3",
         messages: [
           {
             role: "system",

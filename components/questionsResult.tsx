@@ -102,7 +102,6 @@ export default function QuestionnaireForm({ id }) {
     <div
       style={{
         margin: "0 auto",
-        background: "#fff",
         borderRadius: 8,
         boxShadow: "0 2px 8px #f0f1f2",
         padding: "0 32px",

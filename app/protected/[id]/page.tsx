@@ -11,7 +11,7 @@ export default async function ProtectedPage({ params }) {
         <QuestionsResult id={id} />
       </section>
       {/* 右侧：问卷列表 */}
-      <aside className="flex-1 border-l pl-4 h-full flex flex-col">
+      <aside className="flex-1 border-l pl-20 h-full flex flex-col">
         <div className="font-bold text-[24px] mb-4 shrink-0">问卷分析</div>
         <div className="flex-1 min-h-0 overflow-y-auto">
           <Analyze id={id} />

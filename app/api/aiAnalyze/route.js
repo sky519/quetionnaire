@@ -21,8 +21,7 @@ export async function POST(request) {
     {
       method: "POST",
       headers: {
-        Authorization:
-          "Bearer sk-rfbcwiudzvsurjdpiiaaaazysktybatpdhaslrxogzaeibfw",
+        Authorization: `Bearer ${process.env.SILICONFLOW_ENCRYPTION_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(rData),

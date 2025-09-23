@@ -1,105 +1,118 @@
-<a href="https://demo-nextjs-with-supabase.vercel.app/">
-  <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
-  <h1 align="center">Next.js and Supabase Starter Kit</h1>
-</a>
+## 系统名称
 
-<p align="center">
- The fastest way to build apps with Next.js and Supabase
-</p>
+智能问卷系统
 
-<p align="center">
-  <a href="#features"><strong>Features</strong></a> ·
-  <a href="#demo"><strong>Demo</strong></a> ·
-  <a href="#deploy-to-vercel"><strong>Deploy to Vercel</strong></a> ·
-  <a href="#clone-and-run-locally"><strong>Clone and run locally</strong></a> ·
-  <a href="#feedback-and-issues"><strong>Feedback and issues</strong></a>
-  <a href="#more-supabase-examples"><strong>More Examples</strong></a>
-</p>
-<br/>
+## 主要功能
 
-## Features
+通过 AI 智能体智能生成问卷调查, 并发起在线问卷投票, 管理员可以登录后台查看投票统计结果，并通过 AI 智能分析投票结果并给出建议。
 
-- Works across the entire [Next.js](https://nextjs.org) stack
-  - App Router
-  - Pages Router
-  - Middleware
-  - Client
-  - Server
-  - It just works!
-- supabase-ssr. A package to configure Supabase Auth to use cookies
-- Password-based authentication block installed via the [Supabase UI Library](https://supabase.com/ui/docs/nextjs/password-based-auth)
-- Styling with [Tailwind CSS](https://tailwindcss.com)
-- Components with [shadcn/ui](https://ui.shadcn.com/)
-- Optional deployment with [Supabase Vercel Integration and Vercel deploy](#deploy-your-own)
-  - Environment variables automatically assigned to Vercel project
+## 主要技术框架
 
-## Demo
+- 智行云
 
-You can view a fully working demo at [demo-nextjs-with-supabase.vercel.app](https://demo-nextjs-with-supabase.vercel.app/).
+  1. 用户输入问卷标题和目标，通过大模型生成问卷
+  2. 通过发消息功能发送问卷到目标用户的交建通发起问卷调查。
 
-## Deploy to Vercel
+- Next.js
 
-Vercel deployment will guide you through creating a Supabase account and project.
+  1. 用作问卷调查和调查结果的前端展示
+  2. 创建接口供智能体调用来保存问卷内容。
 
-After installation of the Supabase integration, all relevant environment variables will be assigned to the project so the deployment is fully functioning.
+- Supabase
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&project-name=nextjs-with-supabase&repository-name=nextjs-with-supabase&demo-title=nextjs-with-supabase&demo-description=This+starter+configures+Supabase+Auth+to+use+cookies%2C+making+the+user%27s+session+available+throughout+the+entire+Next.js+app+-+Client+Components%2C+Server+Components%2C+Route+Handlers%2C+Server+Actions+and+Middleware.&demo-url=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2F&external-id=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-supabase&demo-image=https%3A%2F%2Fdemo-nextjs-with-supabase.vercel.app%2Fopengraph-image.png)
+  1. 用来做用户鉴权
+  2. 利用其提供的数据存储功能来保存问卷和答案。
 
-The above will also clone the Starter kit to your GitHub, you can clone that locally and develop locally.
+- Zeabur
 
-If you wish to just develop locally and not deploy to Vercel, [follow the steps below](#clone-and-run-locally).
+  1. 用来发布问卷网页。
 
-## Clone and run locally
+## 智能体实现
 
-1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new)
+1.  开始节点
 
-2. Create a Next.js app using the Supabase Starter template npx command
+    用户输入问卷标题 title 和目标 target
 
-   ```bash
-   npx create-next-app --example with-supabase with-supabase-app
-   ```
+    ![1.png](./assets/1.png)
 
-   ```bash
-   yarn create next-app --example with-supabase with-supabase-app
-   ```
+2.  大模型节点
 
-   ```bash
-   pnpm create next-app --example with-supabase with-supabase-app
-   ```
+    将第一步的标题和目标发送给大模型，让大模型生成问卷列表，并返回 json 格式供后续节点调用。
 
-3. Use `cd` to change into the app's directory
+    系统提示词：
 
-   ```bash
-   cd with-supabase-app
-   ```
+        "你是一个专业的问卷设计专家，需要根据用户提供的主题和目标生成结构化问卷。请严格遵守以下规则：
 
-4. Rename `.env.example` to `.env.local` and update the following:
+        1. 输出格式：
+          生成 10 个问题的 JSON 数组，格式必须为：
+          {res:[
+          {id:0, type:'input', title:'问题文本'},
+          {id:1, type:'checkbox', title:'问题文本', options:['选项 1','选项 2']},
+          {id:2, type:'radio', title:'问题文本', options:[true,false]}
+          ]}
+          不要包含任何额外文本,不要输出思考过程，输出结果只要 JSON
 
-   ```
-   NEXT_PUBLIC_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
-   ```
+        2. 题型要求：
+          • 至少 2 道文本输入题 (type: input)
+          • 至少 3 道单选题 (type: radio)
+          • 至少 3 道多选题 (type: checkbox)
+          • 剩余 2 题自由分配类型
 
-   Both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` can be found in [your Supabase project's API settings](https://supabase.com/dashboard/project/_?showConnect=true)
+        3. 内容规范：
+          • 所有问题必须紧扣用户提供的主题和目标
+          • 问题表述清晰中立，无引导性
+          • 选择题选项覆盖所有可能性
+          • 题目顺序：基本信息收集 → 核心问题 → 开放式反馈
 
-5. You can now run the Next.js local development server:
+        4. 选项规则：
+          • 单选/多选题必须包含 options 数组
+          • 选项值使用字符串或布尔值（禁用数字）
+          • 单选题选项数量：3-5 个
+          • 多选题选项数量：4-7 个
 
-   ```bash
-   npm run dev
-   ```
+        等待用户提供问卷主题和目标信息"
 
-   The starter kit should now be running on [localhost:3000](http://localhost:3000/).
+    用户提示词：
 
-6. This template comes with the default shadcn/ui style initialized. If you instead want other ui.shadcn styles, delete `components.json` and [re-install shadcn/ui](https://ui.shadcn.com/docs/installation/next)
+         "请根据以下信息生成10题问卷：
 
-> Check out [the docs for Local Development](https://supabase.com/docs/guides/getting-started/local-development) to also run Supabase locally.
+         主题：{{title}}
+         目标：{{target}}
 
-## Feedback and issues
+         附加要求：
+         1. 包含基础信息收集题（如职业/年龄）
+         2. 包含3道核心主题相关问题
+         3. 最后包含1道开放式反馈题
+         4. 确保选项完整覆盖所有可能性"
 
-Please file feedback and issues over on the [Supabase GitHub org](https://github.com/supabase/supabase/issues/new/choose).
+    ![2.png](./assets/2.png)
 
-## More Supabase examples
+3.  http 请求节点
 
-- [Next.js Subscription Payments Starter](https://github.com/vercel/nextjs-subscription-payments)
-- [Cookie-based Auth and the Next.js 13 App Router (free course)](https://youtube.com/playlist?list=PL5S4mPUpp4OtMhpnp93EFSo42iQ40XjbF)
-- [Supabase Auth and the Next.js App Router](https://github.com/supabase/supabase/tree/master/examples/auth/nextjs)
+    将大模型节点返回的问卷 json，以及开始节点输入的问卷 title，target，一起调用部署在 zeabur 上的 api，api 接收后保存到 Supabase，同时返回问卷的 id。
+
+    ![3.png](./assets/3.png)
+
+4.  发送消息节点
+
+    通过发送消息节点向目标用户发送问卷调查，将部署好的页面发给用户，并附带上 id
+
+    ![4.png](./assets/4.png)
+
+5.  交建通接收消息
+
+    智能体运行完成后，目标用户会在交建通上收到一条问卷消息。
+
+    ![5.png](./assets/5.png)
+
+6.  投票
+
+    用户点击该消息，跳转到部署好的页面上完成投票。
+
+    ![6.png](./assets/6.png)
+
+7.  管理员查看投票结果
+
+    管理员登录后可以查看投票结果，并通过 AI 智能分析投票结果并给出意见和建议。
+
+    ![7.png](./assets/7.png)

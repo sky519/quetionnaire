@@ -107,19 +107,31 @@ export default function QuestionnaireForm({ id }) {
         padding: "0 32px",
       }}
     >
-      <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 32 }}>
+      <h2
+        style={{
+          fontSize: 24,
+          fontWeight: 700,
+          marginBottom: 32,
+          color: "rgba(156, 163, 175, 1)",
+        }}
+      >
         {title}
       </h2>
       <Form layout="vertical" aria-readonly disabled>
         {questions.map((q) => (
           <Form.Item
             key={q.id}
-            label={q.id + 1 + ". " + q.title}
+            label={
+              <span className="text-gray-900 dark:text-gray-100">
+                {q.id + 1 + ". " + q.title}
+              </span>
+            }
             style={{ marginBottom: 28 }}
           >
             {q.type === "input" && (
               <div className="h-40 overflow-y-auto">
                 <List
+                  className="dark:bg-gray-800 bg-white"
                   size="small"
                   bordered
                   dataSource={
@@ -127,7 +139,11 @@ export default function QuestionnaireForm({ id }) {
                       ? (answers[q.id] as (string | boolean)[])
                       : []
                   }
-                  renderItem={(item) => <List.Item>{item}</List.Item>}
+                  renderItem={(item) => (
+                    <List.Item className=" text-gray-900 dark:text-gray-100">
+                      {item}
+                    </List.Item>
+                  )}
                 />
               </div>
             )}

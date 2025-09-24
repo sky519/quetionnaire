@@ -2,7 +2,7 @@ import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
 import Questions from "@/components/questions";
 import { hasEnvVars } from "@/lib/utils";
-// import Link from "next/link";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import "@ant-design/v5-patch-for-react-19";
 
 export default async function Home({ searchParams }) {
@@ -16,6 +16,7 @@ export default async function Home({ searchParams }) {
       <div className="flex-1 w-full flex flex-col items-center overflow-hidden">
         <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
           <div className="w-full flex justify-end items-center p-3 px-5 text-sm">
+            <ThemeSwitcher />
             {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
           </div>
         </nav>

@@ -103,6 +103,11 @@ body {
   background-size: cover;
   background-position: center;
 }
+
+.dark body {
+  background-image: url("../assets/bgDark.png");
+}
+
 main,
 nav {
   background: none !important;

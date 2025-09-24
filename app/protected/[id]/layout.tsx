@@ -1,6 +1,6 @@
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
-// import { ThemeSwitcher } from "@/components/theme-switcher";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { hasEnvVars } from "@/lib/utils";
 import List from "./components/list";
 
@@ -14,7 +14,7 @@ export default function ProtectedLayout({
       {/* 顶部固定导航栏 */}
       <nav className="w-full fixed top-0 left-0 z-20 bg-white border-b border-b-foreground/10 h-16 flex justify-end xs:bg-white">
         <div className="w-full flex justify-end items-center p-3 px-5 text-sm mx-auto">
-          {/* <ThemeSwitcher /> */}
+          <ThemeSwitcher />
           {!hasEnvVars ? <EnvVarWarning /> : <AuthButton />}
         </div>
       </nav>
@@ -23,7 +23,7 @@ export default function ProtectedLayout({
         <div className="w-full flex flex-col md:flex-row h-[calc(100vh-8rem)] min-h-0 overflow-y-auto">
           {/* 左侧：问卷列表 */}
           <aside className="w-full md:w-1/3 lg:w-1/4 min-w-0 max-w-full md:max-w-xl border-b md:border-b-0 md:border-r pr-0 md:pr-4 h-auto md:h-full flex flex-col mb-4 md:mb-0">
-            <div className="font-bold text-[20px] md:text-[24px] mb-4 shrink-0 text-center md:text-left">
+            <div className="font-bold text-gray-400 text-[20px] md:text-[24px] mb-4 shrink-0 text-center md:text-left">
               问卷列表
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto">

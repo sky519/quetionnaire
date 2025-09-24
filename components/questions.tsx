@@ -165,11 +165,11 @@ export default function QuestionnaireForm({
       style={{
         maxWidth: 600,
         margin: "20px auto",
-        background: "#fff",
         borderRadius: 8,
         boxShadow: "0 2px 8px #f0f1f2",
         padding: 32,
       }}
+      className="dark:bg-gray-800 bg-white"
     >
       <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 32 }}>
         {title}
@@ -178,7 +178,11 @@ export default function QuestionnaireForm({
         {questions.map((q) => (
           <Form.Item
             key={q.id}
-            label={q.id + 1 + ". " + q.title}
+            label={
+              <span className="text-gray-900 dark:text-gray-100">
+                {q.id + 1 + ". " + q.title}
+              </span>
+            }
             style={{ marginBottom: 28 }}
           >
             {q.type === "input" && (
@@ -207,6 +211,7 @@ export default function QuestionnaireForm({
                     key={String(opt)}
                     value={opt}
                     style={{ marginRight: 16 }}
+                    className="text-gray-900 dark:text-gray-100"
                   >
                     {typeof opt === "boolean" ? (opt ? "是" : "否") : opt}
                   </Radio>
@@ -232,6 +237,7 @@ export default function QuestionnaireForm({
                     key={String(opt)}
                     value={opt}
                     style={{ marginRight: 16 }}
+                    className="text-gray-900 dark:text-gray-100"
                   >
                     {opt}
                   </Checkbox>

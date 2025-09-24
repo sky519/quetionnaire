@@ -1,7 +1,16 @@
 import Analyze from "./components/analyze";
 import QuestionsResult from "@/components/questionsResult";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function ProtectedPage({ params }) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.getClaims();
+  if (error || !data?.claims) {
+    redirect("/auth/login");
+  }
+
   const pageParams = await params;
   const id = pageParams.id;
   return (

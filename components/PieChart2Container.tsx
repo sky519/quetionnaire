@@ -42,6 +42,7 @@ export default function PieChart2Container({ answerData }) {
           fill="#8884d8"
           paddingAngle={5}
           dataKey="value"
+          label
         >
           {data.map((entry, index) => (
             <Cell

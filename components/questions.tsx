@@ -256,7 +256,7 @@ export default function QuestionnaireForm({
   ) : (
     <div>
       <h2 className="text-center my-10 text-2xl font-bold">
-        您已提交过问卷，谢谢参与！
+        您已完成该问卷调研，谢谢参与！
       </h2>
     </div>
   );
